@@ -66,8 +66,8 @@ html(lang="en")
             code.data-trim.data-no-escape.
               for event in display.poll_events() {
                 match event {
-                  glutin::Event::Closed => return support::Action::Stop,
-                  e => println!("got {:?}", e)
+                  glutin::Event::Closed =&gt; return support::Action::Stop,
+                  e =&gt; println!("got {:?}", e)
                 }
               }
         section
