@@ -2,7 +2,7 @@
 doctype html
 html(lang="en")
   head
-    title Building trust free apps in a hostile world
+    title 24 hours of game dev in Rust
     link(rel="stylesheet" href="css/reveal.css")
     link(rel="stylesheet" href="css/theme/black.css")
     link(rel="stylesheet" href="css/highlight.min.css")
@@ -72,13 +72,36 @@ html(lang="en")
               }
         section
           h1 23:00
-          h2 An ounce of organisation
+          h2(style="text-decoration: line-through;") An ounce of organisation
+          h2 Paying the piper
         section
+          p An hour hell spent learning Rust's module system
+          p You know what I said about stealing everything ...
+          p Throw that out and start from scratch.
+          p Adding it back in line by line.
+        section
+          h1 22:00
+          h2(style="text-decoration: line-through;") An ounce of organisation
+          h2 Piper needs a brand new car
+        section
+          p An hour spent battling glium Types
+          p Example of facade/vertex buffer
+        section
+          p Neat macro vertex buffer example
+        section
+          h1 21:00
+          p &nbsp;
           img(src="img/value.types.jpg")
+        section
           p
             code.data-trim.data-no-escape.
               \#[derive(Clone,Copy,Debug,Eq,PartialEq)]
+          p &nbsp;
           p Simple &amp; Inefficient &lt;3
+          p -or-
+          p If everybody gets a copy, nobody needs to borrow
+          p &nbsp;
+          p Disclaimer: This is not idiomatic Rust, these are the fever dreams of a Scala developer who's never been allowed to stack allocate before.
         section
           h2 Seperate all the things
           ul
@@ -87,6 +110,7 @@ html(lang="en")
             li Game State
             li Game Update (function)
             li Render (function)
+
 
     script(type='text/javascript').
        Reveal.initialize({
