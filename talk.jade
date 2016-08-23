@@ -1,0 +1,100 @@
+
+doctype html
+html(lang="en")
+  head
+    title Building trust free apps in a hostile world
+    link(rel="stylesheet" href="css/reveal.css")
+    link(rel="stylesheet" href="css/theme/black.css")
+    link(rel="stylesheet" href="css/highlight.min.css")
+    script(src="js/classList.js")
+    script(src="js/head.min.js")
+    script(src="js/html5shiv.js")
+    script(src="js/reveal.js")
+  body
+    div.reveal
+      div.slides
+        section
+          h2 24 hours of game dev in Rust
+        section
+          h2 Me
+          ul
+            li Michael Shaw
+            li Years of developing games in Scala
+            li 24 hours of Rust experience
+        section
+          h2 Cheating
+          p I read this beforehand
+          a(href="https://doc.rust-lang.org/book/") https://doc.rust-lang.org/book/
+        section
+          h1 24:00
+          h2 Thievery and triangles
+        section
+          h3 Glium
+          ul
+            li OpenGL wrapper, without the state
+            li Forget about glEnable/glDisable/glBind/glUnbind ...
+            li Don't look at the issues count on github, everything is fine
+          pre
+            code.data-trim.data-no-escape.
+              target.draw(
+                &amp;vertex_buffer,
+                &amp;index_buffer,
+                &amp;program,
+                &amp;uniforms,
+                &amp;Default::default()
+              ).unwrap();
+        section
+          h3 Mac OS X Notes
+          p Demand a core profile
+          pre
+            code.data-trim.data-no-escape.
+               let display = WindowBuilder::new()
+                 .with_gl_profile(GlProfile::Core)
+                 .with_gl(GlRequest::Specific(Api::OpenGl,(4,0)))
+                 .build_glium().unwrap();
+          p Make your shaders 3.3+
+          pre
+            code.data-trim.data-no-escape.
+              #version 330
+        section
+          p Glium examples are really easy to run (steal them)
+          pre
+            code.data-trim.data-no-escape.
+              cargo run --example tutorial-14
+          p Dump input to the console so you can get used to them
+          pre
+            code.data-trim.data-no-escape.
+              for event in display.poll_events() {
+                match event {
+                  glutin::Event::Closed => return support::Action::Stop,
+                  e => println!("got {:?}", e)
+                }
+              }
+        section
+          h1 23:00
+          h2 An ounce of organisation
+        section
+          img(src="img/value.types.jpg")
+          pre
+            \#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+          p Simple &amp; Inefficient &lt;3
+        section
+          h2 Seperate all the things
+          ul
+            li Window Management
+            li Input Handling (function)
+            li Game State
+            li Game Update (function)
+            li Render (function)
+
+    script(type='text/javascript').
+       Reveal.initialize({
+          controls: false,
+          slideNumber: true,
+          history: true,
+          progress: true,
+          dependencies: [
+            { src: 'js/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+          ]
+       });
+
