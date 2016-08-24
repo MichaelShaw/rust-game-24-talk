@@ -72,25 +72,89 @@ html(lang="en")
               }
         section
           h1 23:00
-          h2(style="text-decoration: line-through;") An ounce of organisation
-          h2 Paying the piper
+          h3(style="text-decoration: line-through;") An ounce of organisation
+          h3 Paying the piper
         section
-          p An hour hell spent learning Rust's module system
+          p An hour spent learning Rust's module system
           p You know what I said about stealing everything ...
-          p Throw that out and start from scratch.
-          p Adding it back in line by line.
+          p Throw that out and start from scratch
+          p Add it back in line by line
+          code.data-trim.data-no-escape.
+           lib.rs
+          pre
+            code.data-trim.data-no-escape.
+              #![crate_name="gm2"]
+              #![allow(dead_code)]
+              \#[macro_use]
+              extern crate glium;
+
+              pub mod core {
+                pub mod camera;
+                pub mod render;
+                pub mod shader;
+                pub mod game;
+              }
+              pub mod game;
+              pub mod input;
+
         section
           h1 22:00
-          h2(style="text-decoration: line-through;") An ounce of organisation
-          h2 Piper needs a brand new car
+          h3(style="text-decoration: line-through;") An ounce of organisation
+          h3 Piper needs a brand new car
         section
           p An hour spent battling glium Types
-          p Example of facade/vertex buffer
+          pre
+            code.data-trim.data-no-escape.
+              pub fn build_window() -&gt;
+                glium::backend::glutin_backend::GlutinFacade
+
+              pub fn render_state&lt;F&gt;(display: &amp;F) -&gt; RenderState
+                where F : glium::backend::Facade
+
+              pub fn render(
+                display: &amp;glium::Display,
+                rs:&amp;RenderState,
+                color: [f32; 4]
+              )
+
         section
           p Neat macro vertex buffer example
         section
           h1 21:00
-          p &nbsp;
+          p Textured Quads
+        section
+          h3 Texture Arrays are your friend
+          p Texture array example with Image
+        section
+          h3 Quads
+          p Quads are easy
+          p Build a quad tesselator
+        section
+          p Our Vertices
+          pre
+            code.data-trim.data-no-escape.
+              \#[derive(Copy, Clone)]
+              pub struct PTCVertex {
+                  pub position: [f32; 3],
+                  pub tex_coord: [f32; 3],
+                  pub color: [f32; 4],
+              }
+          p Our Shader (GLSL)
+          pre
+            code.data-trim.data-no-escape.
+              void main() {
+                vec4 tColour = texture(u_texture_array, vTexCoord);
+                f_color = tColour * vColor * u_color;
+              }
+        section
+          h1 20:00
+          h3 Generating geometry
+        section
+          p [Diagram of camera at 45 degrees]
+          p [Walls and floors]
+        section
+          h1 18:00
+          h3 Organisation &amp; Inefficiency
           img(src="img/value.types.jpg")
         section
           p
@@ -99,17 +163,31 @@ html(lang="en")
           p &nbsp;
           p Simple &amp; Inefficient &lt;3
           p -or-
-          p If everybody gets a copy, nobody needs to borrow
+          p Why borrow when you can copy? (don't answer that)
           p &nbsp;
           p Disclaimer: This is not idiomatic Rust, these are the fever dreams of a Scala developer who's never been allowed to stack allocate before.
         section
           h2 Seperate all the things
           ul
             li Window Management
-            li Input Handling (function)
             li Game State
-            li Game Update (function)
-            li Render (function)
+            li Input Handling
+            li Game Update
+            li Render
+        section
+          h2 Window Management
+        section
+          h2 Game State
+        section
+          h2 Input Handling
+          p Event Types, Sequence
+          p Translate
+        section
+          h2 Render
+          p Render State
+        section
+          h1 20:00
+
 
 
     script(type='text/javascript').
