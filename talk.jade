@@ -116,7 +116,6 @@ html(lang="en")
                 rs:&amp;RenderState,
                 color: [f32; 4]
               )
-
         section
           p Neat macro vertex buffer example
         section
@@ -130,7 +129,7 @@ html(lang="en")
           p Quads are easy
           p Build a quad tesselator
         section
-          p Our Vertices
+          p Fat Vertices
           pre
             code.data-trim.data-no-escape.
               \#[derive(Copy, Clone)]
@@ -138,6 +137,7 @@ html(lang="en")
                   pub position: [f32; 3],
                   pub tex_coord: [f32; 3],
                   pub color: [f32; 4],
+                  pub normal: [f32; 3],
               }
           p Our Shader (GLSL)
           pre
@@ -154,6 +154,29 @@ html(lang="en")
           p [Walls and floors]
         section
           h1 18:00
+          h3 Cameras and tiles
+        section
+          p [example of cameras and tiles]
+          p adding discard
+          p blending and depth
+        section
+          h1 16:00
+          p Examples be damned
+          p Example shader had matrix multiplication around the wrong way
+          p Spent an hour debugging my working camera functions
+        section
+          h3 Static Normals and rotating sun
+        section
+          h1 15:00
+        section
+          p Input Handling
+          p Ray Picking
+        section
+          h1 12:00
+        section
+          p Organisation?
+        section
+          h1 XYZ
           h3 Organisation &amp; Inefficiency
           img(src="img/value.types.jpg")
         section
@@ -185,8 +208,7 @@ html(lang="en")
         section
           h2 Render
           p Render State
-        section
-          h1 20:00
+
 
 
 
