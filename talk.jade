@@ -248,6 +248,13 @@ html(lang="en")
           p.big_numbers 21:00
           h3 Textured Quads &amp; Fat Vertices
         section
+          h3 Engine Design
+          p 2D sprites positioned in 3D (more than Z order)
+          p Quads only
+          p One vertex format
+          p At most a few batches per frame
+          p Dev performance, not machine performance
+        section
           h3 One fat vertex format
           pre
             code.data-trim.data-no-escape.
@@ -260,7 +267,8 @@ html(lang="en")
               }
 
               implement_vertex!(PTCNVertex, position, tex_coord, color, normal);
-          p One vertex format is enough
+          p "color" allows us to flash guys white if they get hit<br>or red if they're hurt
+          p "normal" allows us to do add lighting if we have time
         section
            pre
             code.data-trim.data-no-escape.
@@ -277,16 +285,15 @@ html(lang="en")
         section
           h3 Texture Arrays are your friend
           img(src="img/texture_array.png" style='float:right;margin-left:100px' width=300 height=600 )
-          p &nbsp;
-          p Run out of space?
+          p(style="margin-top:60px;") Great for sprites
+          p(style="margin-top:60px;") Run out of space?
           p Add another layer
-          p &nbsp;
-          p Different sides/factions in your game?
+          p(style="margin-top:60px;") Different sides/factions?
           p Add layers with recoloured versions
         section
           h3 Image
           a(href="https://github.com/PistonDevelopers/image") https://github.com/PistonDevelopers/image
-          p The only thing you'll need for interacting with images
+          p The last image reading library you'll need
           pre
             code.data-trim.data-no-escape.
               let image = image::open(&amp;Path::new("img/tiles.png")).unwrap().to_rgba();
@@ -301,40 +308,55 @@ html(lang="en")
                 display,
                 vec![image_raw]
               ).unwrap();
-
         section
-          h3 Quads
+          p OpenGL doesn't have quads
+          img(src="img/quad.jpg")
+          p We can bring them back through duplicating bottom-left and top-right vertices
+        section
+          h3 Efficient* Quads
           pre
             code.data-trim.data-no-escape.
+              pub struct QuadTesselator&lt;T&gt; {
+                vertices: Vec&lt;T&gt;,
+              }
 
-
+              impl&lt;T : Copy&gt; QuadTesselator&lt;T&gt; {
+                pub fn add_quad(&amp;mut self, ts:[T; 4]) {
+                  for ele in ts.iter() {
+                    self.vertices.push(*ele);
+                  }
+                  self.vertices.push(ts[0]);
+                  self.vertices.push(ts[2]);
+                }
+              }
+          p *Developer efficient, embrace #Derive(Copy)
         section
-          h1 20:00
+          p.big_numbers 20:00
           h3 Generating geometry
         section
           p [Diagram of camera at 45 degrees]
           p [Walls and floors]
         section
-          h1 18:00
+          p.big_numbers 18:00
           h3 Cameras and tiles
         section
           p [example of cameras and tiles]
           p adding discard
           p blending and depth
         section
-          h1 16:00
+          p.big_numbers 16:00
           p Examples be damned
           p Example shader had matrix multiplication around the wrong way
           p Spent an hour debugging my working camera functions
         section
           h3 Static Normals and rotating sun
         section
-          h1 15:00
+          p.big_numbers 15:00
         section
           p Input Handling
           p Ray Picking
         section
-          h1 12:00
+          p.big_numbers 12:00
           h3 Hey, this is supposed to be a game dev talk, not an engine talk ...
         section
           h3 Game in 12 hours anyone?
