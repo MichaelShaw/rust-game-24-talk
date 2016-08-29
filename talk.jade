@@ -246,7 +246,7 @@ html(lang="en")
           p Because this is my second hour of Rust
         section
           p.big_numbers 21:00
-          h3 Textured Quads &amp; Fat Vertices
+          h3 The startings of an engine
         section
           h3 Engine Design
           p 2D sprites positioned in 3D (more than Z order)
@@ -367,7 +367,7 @@ html(lang="en")
           p [Code Example of quads add function]
         section
           p.big_numbers 18:00
-          h3 Cameras and tiles
+          h3 Cameras and Tiles
         section
           h3 cgmath
           a(href="https://github.com/brendanzab/cgmath") https://github.com/brendanzab/cgmath
@@ -407,23 +407,22 @@ html(lang="en")
               };
         section
           p.big_numbers 16:00
+          h3 Everything's wrong and I hate the world
         section
-          h3 Everything's wrong
           p Example shader had matrix multiplication reversed
           p Wrongly assumed my camera creation was wrong, and spent an hour debugging it
         section
           p.big_numbers 15:00
+          h3 Interaction
         section
           h3 Input Handling
           pre
             code.data-trim.data-no-escape.
               \#[derive(Clone, Debug, Eq, PartialEq)]
-              pub struct MouseState {
-                pub at: (i32, i32),
-
-                pub down: HashSet&lt;glutin::MouseButton&gt;,
-                pub pushed: HashSet&lt;glutin::MouseButton&gt;, // this frame
-                pub released: HashSet&lt;glutin::MouseButton&gt;, // this frame
+              pub struct KeyState {
+                pub down: HashSet&lt;glutin::VirtualKeyCode&gt;,
+                pub pushed: HashSet&lt;glutin::VirtualKeyCode&gt;, // pushed this frame
+                pub released: HashSet&lt;glutin::VirtualKeyCode&gt;, // released this frame
               }
 
               \#[derive(Clone, Debug, Eq, PartialEq)]
@@ -435,12 +434,18 @@ html(lang="en")
               pub fn produce(input:&amp;InputState, events: &amp;Vec&lt;glutin::Event&gt;)
                   -&gt; InputState
         section
-          h3 Ray Picking
+          h3 Mouse Picking
           p From windowed mouse coordinates to world objects
           pre
             code.data-trim.data-no-escape.
               pub fn ray_for_mouse_position(&amp;self, x:i32, y:i32)
                   -&gt; Option&lt;camera::Line&gt;
+
+              \#[derive(PartialEq, Debug, Copy, Clone)]
+              pub struct Line {
+                pub from: Vec3,
+                pub to: Vec3,
+              }
 
               impl Line {
                 pub fn intersects(&amp;self, plane:Plane) -&gt; Option&lt;Vec3&gt;
@@ -453,20 +458,36 @@ html(lang="en")
               intersection = line.and_then(|l| l.intersects(ground_plane) );
         section
           p.big_numbers 12:00
-          h3 Hey, you said there'd be games ...
+          h3 Hey, you said there'd be games you lying bastard ...
         section
           h3 Game in 12 hours anyone?
+        section
+          h3 Set your expectations low
+        section
+          h3 No, lower than that, like real low
+        section
+          h3 Still not low enough
+          h3 &nbsp;
+          h3 Think No Man's Sky level of disappointment ...
+          h3 &nbsp;
+          h3 But we'll add gameplay
         section
           div
             img(src="img/16x16.tiles.large.png" height=400)
           div
-            ul
-              li Tile laying
-              li Mountain climbing
+            p Tile laying</br>&amp;</br>Mountain climbing
         section
-          p Organisation?
+          h3 Grom, The Mountain God
+          img(src="img/stone.head.jpg" height=500)
+          p Good? Evil? You're the big stone head
         section
-          h1 XYZ
+          h3 Get the chosen one to the mountain top
+          p [mountain, tile and head nastily made composite]
+          p &gt; 1 You Lose ... &lt; 1 You Lose
+          p Who's the chosen one? Clearly the guy that made it, don't think silly thoughts.
+        section
+          p [img of tile sketches]
+        section
           h3 Organisation &amp; Inefficiency
           img(src="img/value.types.jpg")
         section
@@ -476,17 +497,17 @@ html(lang="en")
           p &nbsp;
           p Simple &amp; Inefficient &lt;3
           p -or-
-          p Why borrow when you can copy? (don't answer that)
+          p Why borrow when you can copy?
           p &nbsp;
           p Disclaimer: This is not idiomatic Rust, these are the fever dreams of a Scala developer who's never been allowed to stack allocate before.
         section
           h2 Seperate all the things
           ul
-            li Window Management
             li Game State
             li Input Handling
             li Game Update
             li Render
+            li Game Loop
         section
           h2 Window Management
         section
