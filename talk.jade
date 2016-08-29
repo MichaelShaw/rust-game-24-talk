@@ -15,6 +15,7 @@ html(lang="en")
       div.slides
         section
           h2 24 hours of game dev in Rust
+          p A self imposed game jam trip report
         section
           h2 Me
           ul
@@ -22,16 +23,22 @@ html(lang="en")
             li Years of developing games in Scala
             li 24 hours of Rust experience
         section
+          p Glium &amp; Glutin overview
+          p Game jam style engine design
+          p A smidge of game design
+          p Building a tiny game
+        section
           h2 Cheating
           p I read this beforehand
           a(href="https://doc.rust-lang.org/book/") https://doc.rust-lang.org/book/
         section
-          h1 24:00
-          h2 Thievery and triangles
+          p.big_numbers 24:00
+          h3 Thievery and triangles
         section
           h3 Glium
+          a(href="https://github.com/tomaka/glium") https://github.com/tomaka/glium
+          p Safe OpenGL without the state machine.
           ul
-            li OpenGL wrapper, without the state
             li Forget about glEnable/glDisable/glBind/glUnbind ...
             li Don't look at the issues count on github, everything is fine
           pre
@@ -43,6 +50,112 @@ html(lang="en")
                 &amp;uniforms,
                 &amp;Default::default()
               ).unwrap();
+        section
+          h3 Target
+          pre
+            code.data-trim.data-no-escape.cd_highlight.
+              <span class='cd_highlight'>target</span>.draw(
+                &amp;vertex_buffer,
+                &amp;index_buffer,
+                &amp;program,
+                &amp;uniforms,
+                &amp;Default::default()
+              ).unwrap();
+          p What we're drawing on (window, or off screen)
+          img(src="img/blank.window.png" height=350)
+        section
+          h3 vertex_buffer
+          pre
+            code.data-trim.data-no-escape.cd_highlight.
+              target.draw(
+                &amp;<span class="cd_highlight">vertex_buffer</span>,
+                &amp;index_buffer,
+                &amp;program,
+                &amp;uniforms,
+                &amp;Default::default()
+              ).unwrap();
+          p Vertices that we want to draw (usually triangles)
+          img(src="img/vertices.png" style='background-color:white;' height=200)
+        section
+          h3 program
+          pre
+            code.data-trim.data-no-escape.cd_highlight.
+              target.draw(
+                &amp;vertex_buffer,
+                &amp;index_buffer,
+                &amp;<span class="cd_highlight">program</span>,
+                &amp;uniforms,
+                &amp;Default::default()
+              ).unwrap();
+          p A pair of GLSL programs/"shaders"<br>Vertices + Uniforms in -&gt; Coloured pixels out
+          pre
+            code.data-trim.data-no-escape.cd_highlight.
+              void main() {
+                gl_Position = matrix * vec4(position, 1.0);
+                v_color = color * u_color;
+                v_tex_coord = tex_coord;
+                v_normal = normal;
+              }
+        section
+          h3 uniforms
+          pre
+            code.data-trim.data-no-escape.cd_highlight.
+              target.draw(
+                &amp;vertex_buffer,
+                &amp;index_buffer,
+                &amp;program,
+                &amp;<span class="cd_highlight">uniforms</span>,
+                &amp;Default::default()
+              ).unwrap();
+          p Arbitrary shader program state (textures, colors, camera transforms)
+          pre
+            code.data-trim.data-no-escape.cd_highlight.
+              let uniforms = uniform! {
+                matrix: mvp_raw,
+                u_texture_array: texture,
+                u_color: color,
+                u_alpha_minimum: 0.05_f32,
+                u_sun_direction: adjusted_sun_direction_raw,
+              };
+          p Pretend the (!) isn't there and that it's just a struct.
+        section
+          p That ! is saving you from the 24 years of OpenGL's legacy
+          img(src="img/opengl.gif")
+          p Anytime you see a ! you're exchanging a few hours of runtime trial and error for an runtime error on program start
+        section
+          p Uniforms
+          pre
+            code.data-trim.data-no-escape.cd_highlight.
+              glGetUniformLocation(id,u.name)
+
+              glActiveTexture(GL_TEXTURE0 + n)
+              glBindTexture(tu.target, 0)
+
+              glUniformMatrix4(id, matrix)
+
+          p Shaders
+          pre
+            code.data-trim.data-no-escape.cd_highlight.
+              glBindAttribLocation(id, n, a.name)
+
+              glVertexAttribPointer(n, a.components, a.componentType.glCode,
+                a.normalized, strideBytes, at)
+              glEnableVertexAttribArray(n)
+
+              glDisableVertexAttribArray(n)
+        section
+          div
+            img(src="img/blank.window.png" height=300)
+          p Becomes
+          pre.
+            thread '&lt;main&gt;' panicked at
+
+            'The program attribute `position` is missing in the vertex bindings',
+
+             /Users/michael/.cargo/registry/src/github.com-1ecc6299db9ec823/
+                  glium-0.15.0/src/vertex_array_object.rs:287
+
+            note: Run with `RUST_BACKTRACE=1` for a backtrace.
         section
           h3 Mac OS X Notes
           p Demand a core profile
@@ -61,7 +174,7 @@ html(lang="en")
           pre
             code.data-trim.data-no-escape.
               cargo run --example tutorial-14
-          p Dump input to the console so you can get used to them
+          p Dump input events to the console so you can get used to them
           pre
             code.data-trim.data-no-escape.
               for event in display.poll_events() {
@@ -71,20 +184,28 @@ html(lang="en")
                 }
               }
         section
-          h1 23:00
+          h3 Glutin
+          a(href="https://github.com/tomaka/glutin") https://github.com/tomaka/glutin
+          p Cross platform:
+          ul
+            li Window Creation
+            li Input Events
+            li OpenGL Context Creation
+        section
+          p.big_numbers 23:00
           h3(style="text-decoration: line-through;") An ounce of organisation
           h3 Paying the piper
         section
           p An hour spent learning Rust's module system
           p You know what I said about stealing everything ...
-          p Throw that out and start from scratch
-          p Add it back in line by line
+          p Throw it out and add it back line by line ...
           code.data-trim.data-no-escape.
            lib.rs
           pre
             code.data-trim.data-no-escape.
               #![crate_name="gm2"]
               #![allow(dead_code)]
+
               \#[macro_use]
               extern crate glium;
 
@@ -96,56 +217,97 @@ html(lang="en")
               }
               pub mod game;
               pub mod input;
-
         section
-          h1 22:00
-          h3(style="text-decoration: line-through;") An ounce of organisation
+          h3 Forget everything you know about namespacing from managed languages
+          p <span class='h_highlight'>mod</span>ule directives form a tree
+          p Named pointers, not namespaces
+          p Feels like namespaces + include directives
+        section
+          p.less_big_numbers 22:00
+          h5(style="text-decoration: line-through;") An ounce of organisation
           h3 Piper needs a brand new car
+          img(src="img/cadillac.jpg" height=400)
         section
           p An hour spent battling glium Types
           pre
             code.data-trim.data-no-escape.
               pub fn build_window() -&gt;
                 glium::backend::glutin_backend::GlutinFacade
-
-              pub fn render_state&lt;F&gt;(display: &amp;F) -&gt; RenderState
-                where F : glium::backend::Facade
-
-              pub fn render(
-                display: &amp;glium::Display,
-                rs:&amp;RenderState,
-                color: [f32; 4]
-              )
+          p All the examples are one function, so there's no examples of:
+          pre
+            code.data-trim.data-no-escape.
+              pub fn render(display: &amp;glium::Display, rs:&amp;RenderState)
+          p I'm pretty sure I shouldn't be passing around a GlutinFacade.
         section
-          p Neat macro vertex buffer example
+          p An hour later I find ...
+          pre
+            code.data-trim.data-no-escape.
+              pub use backend::glutin_backend::GlutinFacade as Display;
+          p Because this is my second hour of Rust
         section
-          h1 21:00
-          p Textured Quads
+          p.big_numbers 21:00
+          h3 Textured Quads &amp; Fat Vertices
         section
-          h3 Texture Arrays are your friend
-          p Texture array example with Image
-        section
-          h3 Quads
-          p Quads are easy
-          p Build a quad tesselator
-        section
-          p Fat Vertices
+          h3 One fat vertex format
           pre
             code.data-trim.data-no-escape.
               \#[derive(Copy, Clone)]
-              pub struct PTCVertex {
+              pub struct PTCNVertex {
                   pub position: [f32; 3],
                   pub tex_coord: [f32; 3],
                   pub color: [f32; 4],
                   pub normal: [f32; 3],
               }
-          p Our Shader (GLSL)
+
+              implement_vertex!(PTCNVertex, position, tex_coord, color, normal);
+          p One vertex format is enough
+        section
+           pre
+            code.data-trim.data-no-escape.
+              glium::VertexBuffer::new(display,
+                &amp;[
+                  Vertex { position: [-0.5, -0.5, 0.0], tex_coord: [1.0, 0.0, 1.0],
+                      color:    [0.0, 1.0,  0.0,  1.0], normal:    [0.0, 1.0, 0.0] },
+                  Vertex { position: [0.0,  0.5,  0.0], tex_coord: [1.0, 0.0, 1.0],
+                      color:    [0.0, 0.0,  1.0,  1.0], normal:    [0.0, 1.0, 0.0] },
+                  Vertex { position: [0.5,  -0.5, 0.0], tex_coord: [1.0, 0.0, 1.0],
+                      color:    [1.0, 0.0,  0.0,  1.0], normal:    [0.0, 1.0, 0.0] },
+                ]
+              ).unwrap()
+        section
+          h3 Texture Arrays are your friend
+          img(src="img/texture_array.png" style='float:right;margin-left:100px' width=300 height=600 )
+          p &nbsp;
+          p Run out of space?
+          p Add another layer
+          p &nbsp;
+          p Different sides/factions in your game?
+          p Add layers with recoloured versions
+        section
+          h3 Image
+          a(href="https://github.com/PistonDevelopers/image") https://github.com/PistonDevelopers/image
+          p The only thing you'll need for interacting with images
           pre
             code.data-trim.data-no-escape.
-              void main() {
-                vec4 tColour = texture(u_texture_array, vTexCoord);
-                f_color = tColour * vColor * u_color;
-              }
+              let image = image::open(&amp;Path::new("img/tiles.png")).unwrap().to_rgba();
+              let image_dimensions = image.dimensions();
+
+              let image_raw = texture::RawImage2d::from_raw_rgba_reversed(
+                image.into_raw(),
+                image_dimensions
+              );
+
+              let texture_array = texture::Texture2dArray::new(
+                display,
+                vec![image_raw]
+              ).unwrap();
+
+        section
+          h3 Quads
+          pre
+            code.data-trim.data-no-escape.
+
+
         section
           h1 20:00
           h3 Generating geometry
@@ -173,6 +335,16 @@ html(lang="en")
           p Ray Picking
         section
           h1 12:00
+          h3 Hey, this is supposed to be a game dev talk, not an engine talk ...
+        section
+          h3 Game in 12 hours anyone?
+        section
+          div
+            img(src="img/16x16.tiles.large.png" height=400)
+          div
+            ul
+              li Tile laying
+              li Mountain climbing
         section
           p Organisation?
         section

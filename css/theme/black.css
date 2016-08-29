@@ -7,6 +7,14 @@
 section.has-light-background, section.has-light-background h1, section.has-light-background h2, section.has-light-background h3, section.has-light-background h4, section.has-light-background h5, section.has-light-background h6 {
   color: #222; }
 
+@font-face {
+  font-family: 'digital-7_monomono';
+  src: url('fonts/digital-7_mono-webfont.woff2') format('woff2'),
+       url('fonts/digital-7_mono-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /*********************************************
  * GLOBAL STYLES
  *********************************************/
@@ -27,6 +35,37 @@ body {
   color: #fff;
   background: #bee4fd;
   text-shadow: none; }
+
+.cd_highlight {
+  color: green;
+  font-weight: bold;
+}
+
+.h_highlight {
+  color: #F66;
+}
+
+.big_numbers {
+  font-family: 'digital-7_monomono' !important;
+  font-size: 8.0em !important;
+  /*color: rgb(251, 252, 237) !important;*/
+  color: rgb(246, 214, 103) !important;
+}
+
+.less_big_numbers {
+  font-family: 'digital-7_monomono' !important;
+  font-size: 4.0em !important;
+  margin-top: -30px !important;
+  margin-bottom: -30px !important;
+  /*color: rgb(251, 252, 237) !important;*/
+  color: rgb(246, 214, 103) !important;
+}
+
+
+.cd_big {
+  font-size: 1.3em;
+  line-height: 1.3em;
+}
 
 .reveal .slides > section,
 .reveal .slides > section > section {
