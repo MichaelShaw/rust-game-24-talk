@@ -309,9 +309,10 @@ html(lang="en")
                 vec![image_raw]
               ).unwrap();
         section
-          p OpenGL doesn't have quads
+          h3 Getting Quads back
           img(src="img/quad.jpg")
-          p We can bring them back through duplicating bottom-left and top-right vertices
+          p OpenGL doesn't have quads
+          p We can just duplicate bottom-left and top-right vertices
         section
           h3 Efficient* Quads
           pre
@@ -337,27 +338,122 @@ html(lang="en")
           p [Diagram of camera at 45 degrees]
           p [Walls and floors]
         section
+          p [Hockey game video]
+        section
+          p [Example of adding a floor (with image)]
+          p [Example of adding a wall (with image)]
+        section
+          h3 In Practice
+          pre
+            code.data-trim.data-no-escape.
+              for x in 0..16 {
+                for z in 0..16 {
+                  tesselator.draw_floor_tile(&amp;ground_tile, 0,
+                        x as f64, 0.0, z as f64, 0.0, false);
+                }
+              }
+
+              tesselator.draw_wall_base_anchored_at(&amp;man, 0,
+                        Vec3::new(1.5, 0.0, 1.5), 0.0, false);
+              tesselator.draw_floor_centre_anchored_at(&amp;man_shadow, 0,
+                        Vec3::new(1.5, 0.0, 1.5), 0.01, false);
+              if let &amp;Some(its) = intersection {
+                let x = round_down(its.x);
+                let z = round_down(its.z);
+                tesselator.draw_floor_tile(&amp;indicator, 0,
+                        x as f64, 0.0, z as f64, 0.02, false);
+              }
+        section
+          p [Code Example of quads add function]
+        section
           p.big_numbers 18:00
           h3 Cameras and tiles
         section
-          p [example of cameras and tiles]
-          p adding discard
-          p blending and depth
+          h3 cgmath
+          a(href="https://github.com/brendanzab/cgmath") https://github.com/brendanzab/cgmath
+          p All the vecs, mats, dots, crosses and inverts you need for a game
+        section
+          h3 Pixel Perfect Camera
+          pre
+            code.data-trim.data-no-escape.
+              pub fn projection(zoom:f64,
+                                width:u32,
+                                height:u32,
+                                pixels_per_unit: f64) -&gt; Mat4 {
+
+                let effective_width = (width as f64) / (zoom * pixels_per_unit);
+                let effective_height = (height as f64) / (zoom * pixels_per_unit)
+                                                       / (2.0_f64).sqrt();
+                let half_width = effective_width / 2.0;
+                let half_height = effective_height / 2.0;
+
+                cgmath::ortho(-half_width, half_width,
+                  -half_height, half_height,
+                  -100.0, 100.0
+                )
+              }
+        section
+          h3 Blending &amp; Depth
+          pre
+            code.data-trim.data-no-escape.
+              let draw_parameters = glium::DrawParameters {
+                 depth: glium::Depth {
+                     test: glium::draw_parameters::DepthTest::IfLess,
+                     write: true,
+                     .. Default::default()
+                 },
+                 blend: glium::Blend::alpha_blending(),
+                 .. Default::default()
+              };
         section
           p.big_numbers 16:00
-          p Examples be damned
-          p Example shader had matrix multiplication around the wrong way
-          p Spent an hour debugging my working camera functions
         section
-          h3 Static Normals and rotating sun
+          h3 Everything's wrong
+          p Example shader had matrix multiplication reversed
+          p Wrongly assumed my camera creation was wrong, and spent an hour debugging it
         section
           p.big_numbers 15:00
         section
-          p Input Handling
-          p Ray Picking
+          h3 Input Handling
+          pre
+            code.data-trim.data-no-escape.
+              \#[derive(Clone, Debug, Eq, PartialEq)]
+              pub struct MouseState {
+                pub at: (i32, i32),
+
+                pub down: HashSet&lt;glutin::MouseButton&gt;,
+                pub pushed: HashSet&lt;glutin::MouseButton&gt;, // this frame
+                pub released: HashSet&lt;glutin::MouseButton&gt;, // this frame
+              }
+
+              \#[derive(Clone, Debug, Eq, PartialEq)]
+              pub struct InputState {
+                pub mouse:MouseState,
+                pub keys:KeyState,
+              }
+
+              pub fn produce(input:&amp;InputState, events: &amp;Vec&lt;glutin::Event&gt;)
+                  -&gt; InputState
+        section
+          h3 Ray Picking
+          p From windowed mouse coordinates to world objects
+          pre
+            code.data-trim.data-no-escape.
+              pub fn ray_for_mouse_position(&amp;self, x:i32, y:i32)
+                  -&gt; Option&lt;camera::Line&gt;
+
+              impl Line {
+                pub fn intersects(&amp;self, plane:Plane) -&gt; Option&lt;Vec3&gt;
+          p In our main loop
+          pre
+            code.data-trim.data-no-escape.
+              let new_input_state = input::produce(&amp;input_state, &amp;evs);
+              let (mouse_x, mouse_y) = input_state.mouse.at;
+              let line = render_state.ray_for_mouse_position(mouse_x, mouse_y);
+              intersection = line.and_then(|l| l.intersects(ground_plane) );
         section
           p.big_numbers 12:00
-          h3 Hey, this is supposed to be a game dev talk, not an engine talk ...
+          h3 Hey, you said there'd be games ...
         section
           h3 Game in 12 hours anyone?
         section
