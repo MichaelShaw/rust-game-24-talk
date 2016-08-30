@@ -107,7 +107,7 @@ html(lang="en")
                 &amp;<span class="cd_highlight">uniforms</span>,
                 &amp;Default::default()
               ).unwrap();
-          p Arbitrary shader program state (textures, colors, camera transforms)
+          p Shader program state <br />(textures, colors, camera transforms)
           pre
             code.data-trim.data-no-escape.cd_highlight.
               let uniforms = uniform! {
@@ -121,7 +121,7 @@ html(lang="en")
         section
           p That ! is saving you from the 24 years of OpenGL's legacy
           img(src="img/opengl.gif")
-          p Anytime you see a ! you're exchanging a few hours of runtime trial and error for an runtime error on program start
+          p Anytime you see a ! you're exchanging a few hours of runtime trial and error for a runtime error on program start
         section
           p Uniforms
           pre
@@ -174,7 +174,7 @@ html(lang="en")
           pre
             code.data-trim.data-no-escape.
               cargo run --example tutorial-14
-          p Dump input events to the console so you can get used to them
+          p Print input events to get familiar
           pre
             code.data-trim.data-no-escape.
               for event in display.poll_events() {
@@ -243,15 +243,14 @@ html(lang="en")
           pre
             code.data-trim.data-no-escape.
               pub use backend::glutin_backend::GlutinFacade as Display;
-          p Because this is my second hour of Rust
+          p Because I'm new at Rust :-/
         section
           p.big_numbers 21:00
-          h3 The startings of an engine
+          h3 Game jam style rendering
         section
-          h3 Engine Design
+          h3 Quick &amp; Dirty
           p 2D sprites positioned in 3D (more than Z order)
-          p Quads only
-          p One vertex format
+          p Quads only, in one vertex format
           p At most a few batches per frame
           p Dev performance, not machine performance
         section
@@ -274,11 +273,11 @@ html(lang="en")
             code.data-trim.data-no-escape.
               glium::VertexBuffer::new(display,
                 &amp;[
-                  Vertex { position: [-0.5, -0.5, 0.0], tex_coord: [1.0, 0.0, 1.0],
+                  PTCNVertex { position: [-0.5, -0.5, 0.0], tex_coord: [1.0, 0.0, 1.0],
                       color:    [0.0, 1.0,  0.0,  1.0], normal:    [0.0, 1.0, 0.0] },
-                  Vertex { position: [0.0,  0.5,  0.0], tex_coord: [1.0, 0.0, 1.0],
+                  PTCNVertex { position: [0.0,  0.5,  0.0], tex_coord: [1.0, 0.0, 1.0],
                       color:    [0.0, 0.0,  1.0,  1.0], normal:    [0.0, 1.0, 0.0] },
-                  Vertex { position: [0.5,  -0.5, 0.0], tex_coord: [1.0, 0.0, 1.0],
+                  PTCNVertex { position: [0.5,  -0.5, 0.0], tex_coord: [1.0, 0.0, 1.0],
                       color:    [1.0, 0.0,  0.0,  1.0], normal:    [0.0, 1.0, 0.0] },
                 ]
               ).unwrap()
@@ -291,9 +290,9 @@ html(lang="en")
           p(style="margin-top:60px;") Different sides/factions?
           p Add layers with recoloured versions
         section
-          h3 Image
+          h3 image
           a(href="https://github.com/PistonDevelopers/image") https://github.com/PistonDevelopers/image
-          p The last image reading library you'll need
+          p The last image library you'll need
           pre
             code.data-trim.data-no-escape.
               let image = image::open(&amp;Path::new("img/tiles.png")).unwrap().to_rgba();
@@ -333,17 +332,19 @@ html(lang="en")
           p *Developer efficient, embrace #Derive(Copy)
         section
           p.big_numbers 20:00
-          h3 Generating geometry
+          h3 Generating geometry: Walls and Floors
         section
-          p [Diagram of camera at 45 degrees]
-          p [Walls and floors]
+          img(src="img/camera.png" height=700)
         section
-          p [Hockey game video]
+          iframe(width="856" height="660" src="https://www.youtube.com/embed/PmdodO7o3bg" frameborder="0" allowfullscreen)
         section
-          p [Example of adding a floor (with image)]
-          p [Example of adding a wall (with image)]
+          iframe(width="856" height="660" src="https://www.youtube.com/embed/THaHW_rdAhU" frameborder="0" allowfullscreen)
         section
-          h3 In Practice
+          h3 Base Anchored Wall
+          img(src="img/walls.png" height=460)
+          p "Smart" quad tesselator understands desired pixel scale and texture sizes to give consistent pixel density
+        section
+          h3 Rendering becomes
           pre
             code.data-trim.data-no-escape.
               for x in 0..16 {
@@ -363,8 +364,6 @@ html(lang="en")
                 tesselator.draw_floor_tile(&amp;indicator, 0,
                         x as f64, 0.0, z as f64, 0.02, false);
               }
-        section
-          p [Code Example of quads add function]
         section
           p.big_numbers 18:00
           h3 Cameras and Tiles
@@ -409,8 +408,14 @@ html(lang="en")
           p.big_numbers 16:00
           h3 Everything's wrong and I hate the world
         section
+          p Assumed my camera creation was wrong, and spent an hour debugging it
+          p &nbsp;
           p Example shader had matrix multiplication reversed
-          p Wrongly assumed my camera creation was wrong, and spent an hour debugging it
+          pre
+            code.data-trim.data-no-escape.
+              <span style="text-decoration: line-through;">gl_Position = vec4(position, 1.0) * matrix;</span>
+
+              gl_Position = matrix * vec4(position, 1.0);
         section
           p.big_numbers 15:00
           h3 Interaction
@@ -433,6 +438,7 @@ html(lang="en")
 
               pub fn produce(input:&amp;InputState, events: &amp;Vec&lt;glutin::Event&gt;)
                   -&gt; InputState
+          p We need to remember a few things between frames
         section
           h3 Mouse Picking
           p From windowed mouse coordinates to world objects
@@ -466,27 +472,28 @@ html(lang="en")
         section
           h3 No, lower than that, like real low
         section
-          h3 Still not low enough
-          h3 &nbsp;
-          h3 Think No Man's Sky level of disappointment ...
-          h3 &nbsp;
-          h3 But we'll add gameplay
+          h3 Think
+          img(src="img/nms.jpg" height=460)
         section
           div
             img(src="img/16x16.tiles.large.png" height=400)
           div
-            p Tile laying</br>&amp;</br>Mountain climbing
+            p Tile laying<br />&amp;<br />Mountain climbing
         section
           h3 Grom, The Mountain God
           img(src="img/stone.head.jpg" height=500)
           p Good? Evil? You're the big stone head
         section
           h3 Get the chosen one to the mountain top
-          p [mountain, tile and head nastily made composite]
+          img(src="img/grom.mockup.jpg" height=400)
           p &gt; 1 You Lose ... &lt; 1 You Lose
-          p Who's the chosen one? Clearly the guy that made it, don't think silly thoughts.
+          p Who's the chosen one?
+          p Clearly the guy that made it
         section
-          p [img of tile sketches]
+          img(src="img/tiles.sketch.png" height=660)
+        section
+          p.big_numbers 11:45
+          h3 State &amp; Game Loops
         section
           h3 Organisation &amp; Inefficiency
           img(src="img/value.types.jpg")
@@ -499,7 +506,8 @@ html(lang="en")
           p -or-
           p Why borrow when you can copy?
           p &nbsp;
-          p Disclaimer: This is not idiomatic Rust, these are the fever dreams of a Scala developer who's never been allowed to stack allocate before.
+          h3 Disclaimer
+          p This is not idiomatic Rust, these are the fever dreams of a Scala developer who can't even remember what life is like without a garbage collector.
         section
           h2 Seperate all the things
           ul
@@ -508,20 +516,6 @@ html(lang="en")
             li Game Update
             li Render
             li Game Loop
-        section
-          h2 Window Management
-        section
-          h2 Game State
-        section
-          h2 Input Handling
-          p Event Types, Sequence
-          p Translate
-        section
-          h2 Render
-          p Render State
-
-
-
 
     script(type='text/javascript').
        Reveal.initialize({
