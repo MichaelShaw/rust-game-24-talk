@@ -557,7 +557,7 @@ html(lang="en")
           p That's just lemmings
         section
           h3 Make sure nobody gets up?
-          p That's just the old testament
+          p That's just weird tower defense
         section
           h3 Get the chosen one to the mountain top
           img(src="img/grom.mockup.jpg" height=400)
@@ -574,7 +574,7 @@ html(lang="en")
           h3 Let's reverse things
         section
           p.big_numbers 9:00
-          h3 Basic Game State
+          h3 First Steps
         section
           h3 Organisation &amp; Inefficiency
           img(src="img/value.types.jpg")
@@ -591,35 +591,128 @@ html(lang="en")
           h2 Game State
           pre
             code.data-trim.data-no-escape.
-              pub type WorldGrid = Vec&lt;Vec&lt;PlacedTile&gt;&gt;;
+              pub type WorldGrid = Vec&lt;Vec&lt;TileId&gt;&gt;;
 
               pub struct World {
                   pub tick: Tick,
-                  pub size : Vec2Size,
+                  pub size: Vec2i,
                   pub tiles: WorldGrid,
-                  pub climbers_by_tile : multimap::MultiMap&lt;BlockLocation, ClimberId&gt;,
-                  pub climbers_by_id: HashMap&lt;ClimberId, Climber&gt;,
+                  pub climbers_by_tile : multimap::MultiMap&lt;Vec2i, u32&gt;,
+                  pub climbers_by_id: HashMap&lt;u32, Climber&gt;,
               }
 
               pub fn advance_world&lt;R : Rng&gt;(world:&amp;World, tiles: &amp;Tiles, rng: &amp;mut R)
                 -&gt; World
         section
-          p.big_numbers 9:00
-          h3 Static tiles, onward
+          h2 Tiles
+          pre
+            code.data-trim.data-no-escape.
+              \#[derive(Debug, Clone, Eq, PartialEq)]
+              pub struct Tile {
+                  pub name: String,
+                  pub id: TileId,
+                  pub nodes: Vec&lt;InnerBlockLocation&gt;, // connected
+              }
+          h2 World Gen
+          pre
+            code.data-trim.data-no-escape.
+              for x in 0..size.x {
+                for y in 0..size.y {
+                  let tile = &amp;tiles.safe[rng.gen_range(0, tile_count)];
+                  let tile_id = tile.id;
+                  placed_tiles[x][y] = place(tile_id);
+                }
+              }
+              placed_tiles[0][0] = place(spawner.id);
+              placed_tiles[1][0] = place(flat.id);
+              placed_tiles[rng.gen_range(0, size.x)][top_row] = place(stone_head.id);
         section
-          h3 implemented tile placement
+            h2 Rendering it
+            pre
+              code.data-trim.data-no-escape.
+                for x in 0..(world_size.x as usize) {
+                  for y in 0..(world_size.y as usize) {
+                    let tile_id = game_state.world.tiles[x][y].id as usize;
+                    let texture_region = &amp;rs.tile_renderers[tile_id];
+                    tesselator.draw_wall_tile(&amp;texture_region, 0, x, y, 0.0, 0.0, false);
+                    tesselator.draw_wall_tile(&amp;texture_region, 1, x, y, 0.0, 0.1, false);
+                    tesselator.draw_wall_tile(&amp;texture_region, 2, x, y, 0.0, 0.2, false);
+                  }
+                }
         section
           p.big_numbers 7:00
-          h3 We have tiles, we need the climbers
         section
-          h3 Implemented sound
-          p Slide on Ears
+          h3 Placing tiles
+          pre
+            code.data-trim.data-no-escape.
+              // place tile
+              if let (Some(is), true) = (intersection,
+                                new_input_state.mouse.left_pushed())  {
+                // can't place on top of climbers
+                if game_state.world.can_place_at(&amp;tiles, is) {
+                  if let Some((tile_id, _)) = game_state.tile_queue.pop_front() {
+                    game_state.world.tiles[is.x as usize][is.y as usize] =
+                                                                  place(tile_id);
+                    tile_placement.play(); // sound
+                  }
+                }
+              }
         section
-          p Climbers are values
+          p.big_numbers 5:00
+        section
+          h3 Ears for sound
+          p
+            a(href="https://github.com/jhasse/ears") https://github.com/jhasse/ears
+          p
+            ul
+              li Simple cross-platform sound
+              li Needs OpenAL &amp; libsndfile at runtime
+              li Works cross platform (unlike some others)
+          p(style='padding-top:10px;')
+            pre
+              code.data-trim.data-no-escape.
+                let mut tile_placement = Sound::new("snd/place_tile.ogg").unwrap();
 
+                tile_placement.play();
         section
-          p.big_numbers 5:30
-          h3 Sound Again, use Ears, blue, smaller levels
+          p.big_numbers 4:00
+          h2 Now with climber<span class='strike'>s</span>
+        section
+          h3 Climber<span class='strike'>s</span>
+          pre
+            code.data-trim.data-no-escape.
+              \#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+              pub struct Climber {
+                  pub id: UniqGameId,
+                  pub prev: TimedLocation,
+                  pub next: TimedLocation,
+              }
+
+              \#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+              pub struct TimedLocation {
+                  pub loc: Vec2i,
+                  pub inner_loc: Vec2i,
+                  pub at: Tick,
+              }
+
+              impl TimedLocation {
+                pub fn exact_location(&amp;self, z:f64) -&gt; Vec3
+        section
+          h3 Rendering climber<span class='strike'>s</span>
+          pre
+            code.data-trim.data-no-escape.
+              impl Climber {
+                pub fn exact_location_at(&amp;self, tick:Tick, z:f64) -&gt; Vec3 {
+                  let clamped = clamp(tick, self.prev.at, self.next.at);
+                  let action_duration = self.next.at - self.prev.at;
+                  let progress = if action_duration == 0 {
+                      1.0
+                  } else {
+                      (clamped - self.prev.at) as f64 / action_duration as f64
+                  };
+                  lerp(self.prev.exact_location(z),
+                       self.next.exact_location(z),
+                       progress);
         section
           p.big_numbers 4:30
           h3 Climbers, damn climbers
