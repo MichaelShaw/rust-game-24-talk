@@ -54,6 +54,10 @@ div.gallery img {
   color: #F66;
 }
 
+.framin {
+  width: 600px !important;
+}
+
 .strike {
   text-decoration: line-through !important;
 }
