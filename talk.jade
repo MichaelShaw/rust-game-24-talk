@@ -405,7 +405,7 @@ html(lang="en")
         section
           iframe(width="856" height="660" src="https://www.youtube.com/embed/THaHW_rdAhU" frameborder="0" allowfullscreen)
         section
-          h3 Base Anchored Wall
+          h3 "Base Anchored Wall"
           img(src="img/walls.png" height=460)
           p "Smart" quad tesselator understands desired pixel scale and texture sizes to give consistent pixel density
         section
@@ -423,6 +423,7 @@ html(lang="en")
                         Vec3::new(1.5, 0.0, 1.5), 0.0, false);
               tesselator.draw_floor_centre_anchored_at(&amp;man_shadow, 0,
                         Vec3::new(1.5, 0.0, 1.5), 0.01, false);
+
               if let &amp;Some(its) = intersection {
                 let x = round_down(its.x);
                 let z = round_down(its.z);
@@ -549,6 +550,12 @@ html(lang="en")
           img(src="img/stone.head.jpg" height=500)
           p Good? Evil? You're the big stone head
         section
+          h3 Help everyone up?
+          p That's just lemmings
+        section
+          h3 Help nobody up?
+          p That's just the old testament
+        section
           h3 Get the chosen one to the mountain top
           img(src="img/grom.mockup.jpg" height=400)
           p &gt; 1 You Lose ... &lt; 1 You Lose
@@ -557,8 +564,14 @@ html(lang="en")
         section
           img(src="img/tiles.sketch.png" height=660)
         section
+          img(src="img/boulder.png" height=460)
+          p Climbing is dangerous
+        section
           p.big_numbers 11:45
-          h3 State &amp; Game Loops
+          h3 Let's reverse things
+        section
+          p.big_numbers 9:00
+          h3 Basic Game State
         section
           h3 Organisation &amp; Inefficiency
           img(src="img/value.types.jpg")
@@ -572,13 +585,21 @@ html(lang="en")
           h3 Disclaimer
           p This is not idiomatic Rust, these are the fever dreams of a Scala developer who can't even remember what life is like without a garbage collector
         section
-          h2 Seperate all the things
-          ul
-            li Game State
-            li Input Handling
-            li Game Update
-            li Render
-            li Game Loop
+          h2 Game State
+          pre
+            code.data-trim.data-no-escape.
+              pub type WorldGrid = Vec&lt;Vec&lt;PlacedTile&gt;&gt;;
+
+              pub struct World {
+                  pub tick: Tick,
+                  pub size : Vec2Size,
+                  pub tiles: WorldGrid,
+                  pub climbers_by_tile : multimap::MultiMap&lt;BlockLocation, ClimberId&gt;,
+                  pub climbers_by_id: HashMap&lt;ClimberId, Climber&gt;,
+              }
+
+              pub fn advance_world&lt;R : Rng&gt;(world:&amp;World, tiles: &amp;Tiles, rng: &amp;mut R)
+                -&gt; World
         section
           p.big_numbers 9:00
           h3 Static tiles, onward
@@ -589,6 +610,10 @@ html(lang="en")
           h3 We have tiles, we need the climbers
         section
           h3 Implemented sound
+          p Slide on Ears
+        section
+          p Climbers are values
+
         section
           p.big_numbers 5:30
           h3 Sound Again, use Ears, blue, smaller levels
