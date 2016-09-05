@@ -41,8 +41,21 @@ body {
   font-weight: bold;
 }
 
+div.gallery img {
+  width:200px;
+  vertical-align: middle;
+  margin-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 20px;
+}
+
 .h_highlight {
   color: #F66;
+}
+
+.strike {
+  text-decoration: line-through !important;
 }
 
 .big_numbers {
@@ -50,6 +63,8 @@ body {
   font-size: 8.0em !important;
   /*color: rgb(251, 252, 237) !important;*/
   color: rgb(246, 214, 103) !important;
+  /*text-shadow: 1px 2px 10px #FFD;
+  transition: width 0.3s;*/
 }
 
 .less_big_numbers {

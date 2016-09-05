@@ -23,6 +23,47 @@ html(lang="en")
             li Years of developing games in Scala
             li 24 hours of Rust experience
         section
+          h2 Why
+          p I started off building big, learning slowly
+          div.gallery
+            a(href="img/games/1.hive.png")
+              img(src="img/games/1.hive.png")
+            a(href="img/games/2.hive.external.png")
+              img(src="img/games/2.hive.external.png")
+            a(href="img/games/3.lich.png")
+              img(src="img/games/3.lich.png")
+            br
+            a(href="img/games/4.arena.rpg.png")
+              img(src="img/games/4.arena.rpg.png" )
+            a(href="img/games/5.monarch.warpaint.png")
+              img(src="img/games/5.monarch.warpaint.png")
+            a(href="img/games/6.early.strategy.png")
+              img(src="img/games/6.early.strategy.png")
+            br
+            a(href="img/games/7.endest.of.days.png")
+              img(src="img/games/7.endest.of.days.png")
+            a(href="img/games/8.bigs.n.smalls.png")
+              img(src="img/games/8.bigs.n.smalls.png")
+            a(href="img/games/9.hockey.png")
+              img(src="img/games/9.hockey.png")
+        section
+          h2 Most of my ideas <span class='strike'>are shit</span><br/>"Require Iteration"
+          p &nbsp;
+          p Learning out they're shit in 24 hours<br /> is much cheaper than 3 months
+        section
+          h2 Scala
+          p Might be the best game jam language in existence
+          p Performance is easily good enough, type safety is great, terse, fast incremental compiler. Functional programming with escape hatches (you can mutate), needed for sprints.
+          p But it sucks when you need to stick with the concept (GC, distribution). High cost abstractions are hard to distuinguish from low cost ones.
+        section
+          h2 Rust
+          p Expressive (but not terse), fast, no GC
+          p Games, ids as pointers over structural sharing
+          p Game jam friendly if you use inefficient but terse approaches (call this "grease")?
+          p How high level + inefficient can you make Rust?
+          p Remove the "grease" when you decide to stick with a concept. Efficient if you want it to be
+        section
+          h2 What
           p Glium &amp; Glutin overview
           p Game jam style engine design
           p A smidge of game design
@@ -31,6 +72,7 @@ html(lang="en")
           h2 Cheating
           p I read this beforehand
           a(href="https://doc.rust-lang.org/book/") https://doc.rust-lang.org/book/
+          p I only counted development. There was another handful of hours planning/struggling with what to build.
         section
           p.big_numbers 24:00
           h3 Thievery and triangles
@@ -502,12 +544,10 @@ html(lang="en")
             code.data-trim.data-no-escape.
               \#[derive(Clone,Copy,Debug,Eq,PartialEq)]
           p &nbsp;
-          p Simple &amp; Inefficient &lt;3
-          p -or-
-          p Why borrow when you can copy?
+          p Simple &amp; Inefficient<br />Why borrow when you can copy? (don't answer that)
           p &nbsp;
           h3 Disclaimer
-          p This is not idiomatic Rust, these are the fever dreams of a Scala developer who can't even remember what life is like without a garbage collector.
+          p This is not idiomatic Rust, these are the fever dreams of a Scala developer who can't even remember what life is like without a garbage collector
         section
           h2 Seperate all the things
           ul
@@ -516,6 +556,22 @@ html(lang="en")
             li Game Update
             li Render
             li Game Loop
+        section
+          p.big_numbers 9:00
+          h3 Static tiles, onward
+        section
+          h3 implemented tile placement
+        section
+          p.big_numbers 7:00
+          h3 We have tiles, we need the climbers
+        section
+          h3 Implemented sound
+        section
+          p.big_numbers 5:30
+          h3 Sound Again, use Ears, blue, smaller levels
+        section
+          p.big_numbers 4:30
+          h3 Climbers, damn climbers
 
     script(type='text/javascript').
        Reveal.initialize({
