@@ -53,15 +53,30 @@ html(lang="en")
         section
           h2 Scala
           p Might be the best game jam language in existence
-          p Performance is easily good enough, type safety is great, terse, fast incremental compiler. Functional programming with escape hatches (you can mutate), needed for sprints.
-          p But it sucks when you need to stick with the concept (GC, distribution). High cost abstractions are hard to distuinguish from low cost ones.
+          ul
+            li Performance is easily good enough
+            li Type safety + terse (fast dev)
+            li Fast incremental compiler
+            li Functional programming with escape hatches
+        section
+          h2 Painful long term
+          ul
+            li Distribution &amp; garbage collection woes
+            li High cost abstractions hard to distuinguish<br/> from low cost ones
+            li Clean code murders the GC
+            li GC friendly code is <b><i>nasty</i></b>
         section
           h2 Rust
-          p Expressive (but not terse), fast, no GC
-          p Games, ids as pointers over structural sharing
-          p Game jam friendly if you use inefficient but terse approaches (call this "grease")?
-          p How high level + inefficient can you make Rust?
-          p Remove the "grease" when you decide to stick with a concept. Efficient if you want it to be
+          ul
+            li Expressive (but not terse), fast, no GC
+            li Tree based ownership over structural sharing is fine with games
+            li Zero cost abstractions (for the machine)
+          p &nbsp;
+          p Can you make it "Game Jam" friendly though?
+        section
+          p Can we create a layer of machine inefficient, <br/>developer productivity based shortcuts?
+          p &nbsp;
+          p Something you start with,<br/> and phase out when you need speed ...
         section
           h2 What
           p Glium &amp; Glutin overview
@@ -70,9 +85,10 @@ html(lang="en")
           p Building a tiny game
         section
           h2 Cheating
-          p I read this beforehand
-          a(href="https://doc.rust-lang.org/book/") https://doc.rust-lang.org/book/
-          p I only counted development. There was another handful of hours planning/struggling with what to build.
+          p &nbsp;
+          p I read <a href="https://doc.rust-lang.org/book/")>https://doc.rust-lang.org/book/</a> beforehand
+          p &nbsp;
+          p I only counted development. <br/>There were a few hours planning with what to build.
         section
           p.big_numbers 24:00
           h3 Thievery and triangles
@@ -82,7 +98,7 @@ html(lang="en")
           p Safe OpenGL without the state machine.
           ul
             li Forget about glEnable/glDisable/glBind/glUnbind ...
-            li Don't look at the issues count on github, everything is fine
+            li Don't look at the issue count on github, everything is fine
           pre
             code.data-trim.data-no-escape.
               target.draw(
@@ -129,7 +145,7 @@ html(lang="en")
                 &amp;uniforms,
                 &amp;Default::default()
               ).unwrap();
-          p A pair of GLSL programs/"shaders"<br>Vertices + Uniforms in -&gt; Coloured pixels out
+          p A pair of GLSL programs/"shaders"<br/><br/>Vertices + Uniforms in -&gt; Coloured pixels out
           pre
             code.data-trim.data-no-escape.cd_highlight.
               void main() {
@@ -161,9 +177,9 @@ html(lang="en")
               };
           p Pretend the (!) isn't there and that it's just a struct.
         section
-          p That ! is saving you from the 24 years of OpenGL's legacy
+          p That ! is saving you from 24 years of OpenGL's legacy
           img(src="img/opengl.gif")
-          p Anytime you see a ! you're exchanging a few hours of runtime trial and error for a runtime error on program start
+          p When you see a ! you're exchanging a few hours of runtime trial and error for a runtime error on program start
         section
           p Uniforms
           pre
@@ -240,7 +256,7 @@ html(lang="en")
         section
           p An hour spent learning Rust's module system
           p You know what I said about stealing everything ...
-          p Throw it out and add it back line by line ...
+          p Throw it out and add it back line by line
           code.data-trim.data-no-escape.
            lib.rs
           pre
@@ -260,10 +276,10 @@ html(lang="en")
               pub mod game;
               pub mod input;
         section
-          h3 Forget everything you know about namespacing from managed languages
+          h3 Forget your managed namespaces
           p <span class='h_highlight'>mod</span>ule directives form a tree
           p Named pointers, not namespaces
-          p Feels like namespaces + include directives
+          p Halfway between namespaces &amp; include directives
         section
           p.less_big_numbers 22:00
           h5(style="text-decoration: line-through;") An ounce of organisation
@@ -296,6 +312,9 @@ html(lang="en")
           p At most a few batches per frame
           p Dev performance, not machine performance
         section
+          img(src="img/guys.flashing.png" height=400)
+          p "Flash" guys in the middle with per vertex colors
+        section
           h3 One fat vertex format
           pre
             code.data-trim.data-no-escape.
@@ -308,10 +327,11 @@ html(lang="en")
               }
 
               implement_vertex!(PTCNVertex, position, tex_coord, color, normal);
-          p "color" allows us to flash guys white if they get hit<br>or red if they're hurt
-          p "normal" allows us to do add lighting if we have time
+          p <b><i>color</i></b> allows us to flash guys white if they get hit<br>or red if they're hurt
+          p &nbsp;
+          p <b><i>normal</i></b> allows us to add lighting if we have time
         section
-           pre
+          pre
             code.data-trim.data-no-escape.
               glium::VertexBuffer::new(display,
                 &amp;[
@@ -323,6 +343,9 @@ html(lang="en")
                       color:    [1.0, 0.0,  0.0,  1.0], normal:    [0.0, 1.0, 0.0] },
                 ]
               ).unwrap()
+        section
+          img(src="img/games/9.hockey.png" height=500)
+          p (Poorly) recoloured sprites for different teams
         section
           h3 Texture Arrays are your friend
           img(src="img/texture_array.png" style='float:right;margin-left:100px' width=300 height=600 )
