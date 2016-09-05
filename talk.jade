@@ -703,20 +703,124 @@ html(lang="en")
             code.data-trim.data-no-escape.
               impl Climber {
                 pub fn exact_location_at(&amp;self, tick:Tick, z:f64) -&gt; Vec3 {
-                  let clamped = clamp(tick, self.prev.at, self.next.at);
+                  let time = clamp(tick, self.prev.at, self.next.at);
                   let action_duration = self.next.at - self.prev.at;
                   let progress = if action_duration == 0 {
                       1.0
                   } else {
-                      (clamped - self.prev.at) as f64 / action_duration as f64
+                      (time - self.prev.at) as f64 / action_duration as f64
                   };
                   lerp(self.prev.exact_location(z),
                        self.next.exact_location(z),
                        progress);
         section
-          p.big_numbers 4:30
-          h3 Climbers, damn climbers
+          p.big_numbers 2:00
+          h3 Climber<span style='font-size:1.3em'>S</span>, it's ugly code time
+        section
+          h3 Movement Rules
+          ol
+            li If you're at the stone head, climb in
+            li Go somewhere new that's not down
+            li Go somewhere new (that's down)
+            li Wait (and reset where you've been)
+        section
+          h3 Travellable Locations
+          pre
+            code.data-trim.data-no-escape.
+              pub fn travellable_locations(&amp;self, from:Vec2i, tiles:&amp;Tiles)
+                -&gt; Vec&lt;(Vec2i, Vec2i)&gt; {
+                let from_tile = tiles.with_id(self.tile_at(from).id);
 
+                self.adjacent_locations(from).into_iter().filter_map( |tl| {
+                  let to_tile = tiles.with_id(self.tile_at(tl).id);
+                  can_travel(from, from_tile, tl, to_tile).map(|il| (tl, il))
+                }).collect()
+              }
+        section
+          h3 Everything would be a stack allocated<br/>lazy iterator if I was better at this
+        section
+          p.big_numbers 00:00
+        section
+          h3 Everybody loves chiptunes
+          a(href="https://soundcloud.com/eric-skiff/come-and-find-me") https://soundcloud.com/eric-skiff/come-and-find-me
+          p Eric Skiff
+          p
+            img(src="img/eric.skiff.jpg")
+          iframe(width="100%" height="130" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/39072423&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true")
+        section
+          h3 Springs for smoothness
+          pre
+            code.data-trim.data-no-escape.
+              pub fn smooth_3d(from:Vec3, to:Vec3, velocity:Vec3, smooth_time:f64,
+                               time_delta:f64) -&gt; (Vec3, Vec3) {
+                let omega = 2.0 / smooth_time;
+                let x = omega * time_delta;
+                let exp = 1.0 / (1.0 + x + 0.48 * x * x + 0.235 * x * x * x);
+                let change = from - to;
+
+                let tmp = (velocity + change * omega) * time_delta;
+
+                let new_velocity = (velocity - omega * tmp) * exp;
+
+                (to + (change + tmp) * exp, new_velocity)
+              }
+          p Attach them to everything
+        section
+          h3 Parallax clouds
+          pre
+            code.data-trim.data-no-escape.
+              let mut render_pos = Vec3::new(pos.x, pos.y, -8.0 + pos.z);
+
+              render_pos -= rs.camera_target.position *
+                                  pos.z * 0.25; // moved based on camera
+
+              tesselator.draw_wall_centre_anchored_at(&amp;cloud_renderer,
+                  0, render_pos, 0.0, false)
+          img(src="img/clouds.png" height=200 style='padding-top:30px;')
+        section
+          h3 Realistic head bob
+          pre
+            code.data-trim.data-no-escape.
+              let seed = ((climber.id as f64 * 1732.0) % 17.0) / 17.0;
+
+              let up = ((climber_state.walk_progress + seed) % 0.05) &lt; 0.025;
+              if up {
+                  pos.y += 0.02;
+              }
+          p
+          pre
+            code.data-trim.data-no-escape.
+              \#[derive(Debug, Clone, PartialEq)]
+              pub struct ClimberRenderState {
+                  pub spring: SpringState3,
+                  pub walk_progress: f64,
+              }
+          img(src="img/head_bob.png" style='padding-top:30px;')
+        section
+          h3 "Dynamic" crowd sounds
+          pre
+            code.data-trim.data-no-escape.
+              let mut walk_sound = Sound::new("snd/walk.ogg").unwrap();
+              walk_sound.set_looping(true);
+              walk_sound.set_volume(0.0);
+              walk_sound.play();
+
+              loop {
+                let mut total_vel = 0.0_f64;
+                for (_,css) in &amp;render_state.entity_springs {
+                    total_vel += css.spring.velocity.magnitude();
+                }
+                let volume = total_vel.log(2.0) / 4.0;
+                walk_sound.set_volume(clamp(volume as f32, 0.0, 0.45));
+        section
+          h3 3D climbing depth
+          pre
+            code.data-trim.data-no-escape.
+              let depth_offset = seed * 0.20 + 0.11;
+          img(src="img/3d.climbing.png" style='padding-top:30px;')
+        section
+          p Thanks for listening
+          p(style='padding-top:30px;') Engine source is up at <br/><a href="https://github.com/MichaelShaw/rust-game-24h">https://github.com/MichaelShaw/rust-game-24h</a>
     script(type='text/javascript').
        Reveal.initialize({
           controls: false,
